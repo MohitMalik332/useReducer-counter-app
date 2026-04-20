@@ -6,13 +6,16 @@ import './App.css'
 function reducer(state, action) {
     switch(action.type){
       case "INCREMENT":
-        return { count: state.count + 1 };
+        return { ...state, count: state.count + state.step };
       
       case "DECREMENT":
-        return { count: state.count - 1 };
+        return { ...state, count: state.count - state.step };
+
+      case "SET_STEP":
+        return { ...state, step: action.payload }
 
       case "RESET":
-        return { count: 0 };
+        return { count: 0, step: 1 };
 
       default:
         return { state };
@@ -20,12 +23,22 @@ function reducer(state, action) {
 }
 
 function App() {
-  const [state, dispatch] = useReducer(reducer, { count: 0 })
+  const [state, dispatch] = useReducer(reducer, {
+    count: 0, 
+    step: 1 
+  })
   
   return (
     <div className="container">
     <div className="card">
+
       <h1 className="count">{state.count}</h1>
+
+      <input 
+        type="number" 
+        value={state.step}
+        onChange={(e) => dispatch({ type: "SET_STEP", payload: Number(e.target.value)})}
+      />
 
       <div className="buttons">
         <button className="inc" onClick={() => dispatch({ type: "INCREMENT" })}>+</button>

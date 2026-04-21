@@ -9,7 +9,10 @@ function reducer(state, action) {
         return { ...state, count: state.count + state.step };
       
       case "DECREMENT":
-        return { ...state, count: state.count - state.step };
+        return {
+          ...state,
+          count: Math.max(0, state.count - state.step)
+        };
 
       case "SET_STEP":
         return { ...state, step: action.payload }
@@ -42,7 +45,13 @@ function App() {
 
       <div className="buttons">
         <button className="inc" onClick={() => dispatch({ type: "INCREMENT" })}>+</button>
-        <button className="dec" onClick={() => dispatch({ type: "DECREMENT" })}>-</button>
+        <button 
+          className="dec" 
+          onClick={() => dispatch({ type: "DECREMENT" })}
+          disabled={state.count === 0}
+        >
+          -
+        </button>
         <button className="reset" onClick={() => dispatch({ type: "RESET" })}>Reset</button>
       </div>
     </div>

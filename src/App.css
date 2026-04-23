@@ -73,3 +73,8 @@ button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+button:last-child {
+  background: #2196f3;
+  color: white;
+}

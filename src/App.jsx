@@ -6,11 +6,15 @@ import './App.css'
 function reducer(state, action) {
     switch(action.type){
       case "INCREMENT":
-        return { ...state, count: state.count + state.step };
+        return { 
+          ...state, 
+          history: [...state.history, state.count],
+          count: state.count + state.step };
       
       case "DECREMENT":
         return {
           ...state,
+          history: [...state.history, state.count],
           count: Math.max(0, state.count - state.step)
         };
 
@@ -18,7 +22,18 @@ function reducer(state, action) {
         return { ...state, step: action.payload }
 
       case "RESET":
-        return { count: 0, step: 1 };
+        return { count: 0, step: 1, history: [] };
+
+      case "UNDO":
+        if (state.history.length === 0) return state;
+
+        const lastValue = state.history[state.history.length - 1];
+
+        return {
+          ...state,
+          count: lastValue,
+          history: state.history.slice(0, -1)
+        }
 
       default:
         return { state };
@@ -28,7 +43,8 @@ function reducer(state, action) {
 function App() {
   const [state, dispatch] = useReducer(reducer, {
     count: 0, 
-    step: 1 
+    step: 1,
+    history: []
   })
   
   return (
@@ -53,6 +69,13 @@ function App() {
           -
         </button>
         <button className="reset" onClick={() => dispatch({ type: "RESET" })}>Reset</button>
+
+        <button 
+          onClick={() => dispatch({ type: "UNDO" })}
+          disabled={state.history.length === 0}
+        >
+          UNDO
+        </button>
       </div>
     </div>
   </div>
